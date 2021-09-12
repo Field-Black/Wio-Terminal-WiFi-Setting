@@ -1,2 +1,2 @@
 # Wio-Terminal-WiFi-Setting
-Graphical user interface to configure WiFi on Wio Terminal.
+Graphical user interface to setup WiFi on Wio Terminal.
