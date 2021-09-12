@@ -16,7 +16,7 @@ Keybord mykey; // Cleate a keybord
 
 
 void setup() {
-
+    // Set LCD
     tft.begin();
     tft.setRotation(3);
     tft.fillScreen(TFT_BLACK);
@@ -65,7 +65,7 @@ void loop() {
     tft.setFreeFont(FMB18);
     tft.setTextDatum(MC_DATUM);
     tft.drawString("Connecting to",160,90);
-    tft.drawString("WiFi...",160,150);
+    tft.drawString("WiFi.",160,150);
     WiFi.begin(ssid, password);
     int i = 0;
     while (WiFi.status() != WL_CONNECTED) {
@@ -74,16 +74,25 @@ void loop() {
         tft.setFreeFont(FMB18);
         tft.setTextDatum(MC_DATUM);
         tft.drawString("Connecting to",160,90);
-        tft.drawString("WiFi...",160,150);
+        if (i<=0){
+          tft.drawString("WiFi..",160,150);
+        }else if (i==1){
+          tft.drawString("WiFi...",160,150);
+        }else if (i==2){
+          tft.drawString("WiFi....",160,150);
+        }else{
+          tft.drawString("WiFi.....",160,150);
+        }
         WiFi.begin(ssid, password);
         i += 1;
-        if (i>=10) {
+        if (i>=2) {
           settingMenu("WiFi Setup",24);
           tft.setFreeFont(FMB18);
           tft.setTextDatum(MC_DATUM);
           tft.drawString("Unable to connect",160,90);
           tft.drawString("to WiFi.",160,150);
           tft.drawString("Try Again!!",160,150);
+          delay(1500);
           errorMenu();
         }
     }
@@ -95,7 +104,7 @@ void loop() {
     tft.setTextDatum(MC_DATUM);
     tft.drawString("Connected!!",160,90);
     tft.setFreeFont(FMB12);
-    tft.drawString("IP: "+String(buf),160,150);
+    tft.drawString(String(ip),160,150);
     tft.setTextDatum(TL_DATUM);
 
     // Wait a bit before scanning again
@@ -204,15 +213,31 @@ void showWiFiInfo(int i) {
   spr.fillSprite(TFT_BLACK); //fill background color of buffer
   spr.setFreeFont(FSB12); //set font type 
   spr.setTextColor(TFT_WHITE); //set text color
-  spr.setCursor(0,0);
+  spr.setCursor(0,0); //set cursor
+  // display SSID
   spr.println("");
   spr.print("SSID: ");
   spr.println(WiFi.SSID(i));
+  // display RSSI
   spr.print("RSSI: ");
   spr.print(WiFi.RSSI(i));
   spr.println(" dBm");
+  // display WiFi Type
   spr.print("Type: ");
-  spr.println(WiFi.encryptionType(i)); 
+  byte encryption = WiFi.encryptionType(i);
+  if (encryption == 2){
+    spr.println("TKIP (WPA)");
+  } else if (encryption == 4){
+    spr.println("CCMP (WPA)");
+  } else if (encryption == 5){
+    spr.println("WEP");
+  } else if (encryption == 7){
+    spr.println("NONE");
+  } else if (encryption == 8){
+    spr.println("AUTO");
+  } else {
+    spr.println(WiFi.encryptionType(i));
+  }
   spr.pushSprite(10, 80); //push to LCD 
   spr.deleteSprite(); //clear buffer
 }
