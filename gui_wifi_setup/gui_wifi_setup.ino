@@ -4,8 +4,6 @@
 
 #include "rpcWiFi.h" //include wifi library
 #include "TFT_eSPI.h" //include LCD library
-#include "Seeed_FS.h" //include SD library
-#include "SD/Seeed_SD.h" //include SD library
 #include "Free_Keybord.h" //include Keybord library
 
 TFT_eSPI tft;
@@ -43,9 +41,6 @@ void loop() {
 
     // finding wifi
     int n = scanWiFi();
-    tft.fillTriangle(180, 220, 220, 200, 220, 240, CornflowerBlue);
-    tft.fillCircle(250, 220, 20, CornflowerBlue);
-    tft.fillTriangle(320, 220, 280, 200, 280, 240, CornflowerBlue);
     String mySSID = getSSIDs(n);
     int len = mySSID.length();
     char charBuf[len+1];
@@ -181,6 +176,13 @@ String getSSIDs(int n){
   } else {
     int i = 1;
     showWiFiInfo(i);
+    char page[11];
+    sprintf(page, "%03d/%03d", i, n);
+    tft.setFreeFont(FSB12);
+    tft.setTextColor(TFT_WHITE,TFT_BLACK);
+    tft.setTextDatum(BR_DATUM);
+    tft.drawString(page,320,240);
+    tft.setTextDatum(TL_DATUM);
     while (!(digitalRead(WIO_5S_PRESS) == LOW)) {
       if ((digitalRead(WIO_5S_UP) == LOW)||(digitalRead(WIO_5S_RIGHT) == LOW)||(digitalRead(WIO_KEY_B) == LOW)){
         i = i + 1;
@@ -188,6 +190,12 @@ String getSSIDs(int n){
           i = 1;
         }
         showWiFiInfo(i);
+        sprintf(page, "%03d/%03d", i, n);
+        tft.setFreeFont(FSB12);
+        tft.setTextColor(TFT_WHITE,TFT_BLACK);
+        tft.setTextDatum(BR_DATUM);
+        tft.drawString(page,320,240);
+        tft.setTextDatum(TL_DATUM);
         delay(500);
       } else if ((digitalRead(WIO_5S_DOWN) == LOW)||(digitalRead(WIO_5S_LEFT) == LOW)||(digitalRead(WIO_KEY_C) == LOW)){
         i = i - 1;
@@ -195,12 +203,24 @@ String getSSIDs(int n){
           i = n; 
         }
         showWiFiInfo(i);
+        sprintf(page, "%03d/%03d", i, n);
+        tft.setFreeFont(FSB12);
+        tft.setTextColor(TFT_WHITE,TFT_BLACK);
+        tft.setTextDatum(BR_DATUM);
+        tft.drawString(page,320,240);
+        tft.setTextDatum(TL_DATUM);
         delay(500);
       } else if (digitalRead(WIO_KEY_A) == LOW){
         settingMenu("Select WiFi",24);
         n = scanWiFi();
         i = 1;
         showWiFiInfo(i);
+        sprintf(page, "%03d/%03d", i, n);
+        tft.setFreeFont(FSB12);
+        tft.setTextColor(TFT_WHITE,TFT_BLACK);
+        tft.setTextDatum(BR_DATUM);
+        tft.drawString(page,320,240);
+        tft.setTextDatum(TL_DATUM);
       }
     }
     return WiFi.SSID(i);
